@@ -23,9 +23,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/hello": {
+        "/api/users/info": {
             "get": {
-                "description": "Print welcome",
+                "description": "Get user info",
                 "consumes": [
                     "application/json"
                 ],
@@ -33,14 +33,25 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "users"
                 ],
-                "summary": "Get Welcom",
+                "summary": "Get user info",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/other.Msg"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/users.User"
+                            }
                         }
                     }
                 }
@@ -48,10 +59,13 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "other.Msg": {
+        "users.User": {
             "type": "object",
             "properties": {
-                "msg": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
                     "type": "string"
                 }
             }
@@ -61,12 +75,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
+	Version:          "0.0.1",
+	Host:             "localhost:8080",
+	BasePath:         "/v2",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "ACW-Backend API",
+	Description:      "This is an API server for ACW-Backend",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

@@ -1,31 +1,45 @@
+basePath: /v2
 definitions:
-  other.Msg:
+  users.User:
     properties:
-      msg:
+      id:
+        type: integer
+      name:
         type: string
     type: object
+host: localhost:8080
 info:
   contact:
     email: chenshiang@onon1101.org
     name: API Support
     url: https://github.com/NTUT-Database-System-Course/ACW-Backend/issues
+  description: This is an API server for ACW-Backend
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: ACW-Backend API
+  version: 0.0.1
 paths:
-  /api/hello:
+  /api/users/info:
     get:
       consumes:
       - application/json
-      description: Print welcome
+      description: Get user info
+      parameters:
+      - description: User ID
+        in: query
+        name: id
+        type: integer
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/other.Msg'
-      summary: Get Welcom
+            items:
+              $ref: '#/definitions/users.User'
+            type: array
+      summary: Get user info
       tags:
-      - User
+      - users
 swagger: "2.0"

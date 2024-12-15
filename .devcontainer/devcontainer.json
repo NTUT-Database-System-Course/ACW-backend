@@ -1,23 +1,20 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/go-postgres
 {
-	"name": "Go & PostgreSQL",
-	"dockerComposeFile": "docker-compose.yml",
-	"service": "app",
-	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}"
+    "name": "Go & PostgreSQL",
+    "dockerComposeFile": ".devcontainer/docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
+    // Forward ports for API and PostgreSQL
+    "forwardPorts": [8080, 5432],
 
-	// Configure tool-specific properties.
-	// "customizations": {},
+    // Post create commands to set up the environment
+    "postCreateCommand": "go mod tidy && go install github.com/swaggo/swag/cmd/swag@latest",
 
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [5432],
+    // Set environment variables if needed
+    "remoteEnv": {
+        "GO111MODULE": "on"
+    },
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "go version",
-
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
+    // Optional: Uncomment to set a specific user
+    "remoteUser": "root"
 }

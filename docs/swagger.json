@@ -1,6 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
+        "description": "This is an API server for ACW-Backend",
+        "title": "ACW-Backend API",
         "contact": {
             "name": "API Support",
             "url": "https://github.com/NTUT-Database-System-Course/ACW-Backend/issues",
@@ -9,12 +11,15 @@
         "license": {
             "name": "Apache 2.0",
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        }
+        },
+        "version": "0.0.1"
     },
+    "host": "localhost:8080",
+    "basePath": "/v2",
     "paths": {
-        "/api/hello": {
+        "/api/users/info": {
             "get": {
-                "description": "Print welcome",
+                "description": "Get user info",
                 "consumes": [
                     "application/json"
                 ],
@@ -22,14 +27,25 @@
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "users"
                 ],
-                "summary": "Get Welcom",
+                "summary": "Get user info",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/other.Msg"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/users.User"
+                            }
                         }
                     }
                 }
@@ -37,10 +53,13 @@
         }
     },
     "definitions": {
-        "other.Msg": {
+        "users.User": {
             "type": "object",
             "properties": {
-                "msg": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
                     "type": "string"
                 }
             }

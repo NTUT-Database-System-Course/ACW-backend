@@ -1,11 +1,11 @@
+# ACW-Backend
+
+## how to run env
 ```bash
-go run main.go
+sudo docker-compose -f .devcontainer/docker-compose.yml up --build
 ```
 
+## clean up (including reset db server)
 ```bash
-go mod tidy
-```
-
-```sh
-go test -v ./...
+sudo docker-compose -f .devcontainer/docker-compose.yml down -v
 ```

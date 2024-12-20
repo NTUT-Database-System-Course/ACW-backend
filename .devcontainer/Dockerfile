@@ -26,7 +26,7 @@ RUN go mod download
 COPY . .
 
 # Generate Swagger documentation
-RUN swag init -g main.go
+RUN swag init -g main.go --parseDependency github.com/guregu/null/v5
 
 # Expose port (optional, since it's handled in docker-compose)
 EXPOSE 8080

@@ -58,6 +58,7 @@ func Create(c echo.Context) error {
     // Get current time in Taipei timezone
     location, err := time.LoadLocation("Asia/Taipei")
     if err != nil {
+        log.Printf("Failed to load timezone: %v", err)
         return c.JSON(http.StatusInternalServerError, map[string]string{
             "error": "Failed to load timezone",
         })
@@ -69,6 +70,7 @@ func Create(c echo.Context) error {
     var productID int
     err = tx.QueryRow(query, req.Price, req.Description, req.Name, req.Remain, req.Disability, req.ImageURL, buildTime, vendorID).Scan(&productID)
     if err != nil {
+        log.Printf("Failed to insert product: %v", err)
         return c.JSON(http.StatusInternalServerError, map[string]string{
             "error": "Failed to create product",
         })

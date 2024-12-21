@@ -43,6 +43,8 @@ CREATE TABLE "product"(
     "description" VARCHAR(255) NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "remain" INTEGER NOT NULL,
+    "disability" BOOLEAN NOT NULL,
+    "image_url" VARCHAR(255),
     "build_time" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
     "vendor_id" INTEGER NOT NULL REFERENCES vendor("user_id")
 );
@@ -50,7 +52,7 @@ CREATE TABLE "product"(
 CREATE TABLE "favor"(
     "member_id" INTEGER NOT NULL REFERENCES "member"("user_id"),
     "product_id" INTEGER NOT NULL REFERENCES "product"("id"),
-    "timedate" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
+    "time" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
     PRIMARY KEY("member_id", "product_id")
 );
 
@@ -81,3 +83,38 @@ CREATE TABLE "list"(
     "time" TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
     PRIMARY KEY("order_id", "product_id")
 );
+
+CREATE TABLE "tag"(
+    "id" SERIAL PRIMARY KEY,
+    "name" VARCHAR(255) NOT NULL,
+    "type" INTEGER NOT NULL
+);
+
+CREATE TABLE "own"(
+    "product_id" INTEGER NOT NULL REFERENCES "product"("id"),
+    "tag_id" INTEGER NOT NULL REFERENCES "tag"("id"),
+    PRIMARY KEY("product_id", "tag_id")
+);
+
+INSERT INTO "tag"("name", "type") VALUES
+('food', 0),
+('drink', 0),
+('clothes', 0),
+('electronics', 0),
+('furniture', 0),
+('book', 0),
+('toy', 0),
+('stationery', 0),
+('cosmetics', 1),
+('medicine', 1),
+('sports', 0),
+('music', 0),
+('movie', 0),
+('game', 0),
+('pet', 0),
+('plant', 0),
+('car', 1),
+('bike', 0),
+('house', 0),
+('appliance', 0),
+('other', 0);

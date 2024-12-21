@@ -10,14 +10,16 @@ import (
 // Info gets the member info
 // @Summary Get member info
 // @Description Get member info
+// @Security ApiKeyAuth
 // @Tags member
 // @Accept json
 // @Produce json
 // @Success 200 {object} MemberInfo
+// @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
 // @Failure 500 {object} map[string]string
 // @Router /api/member/info [get]
-func GetInfo(c echo.Context) error {
+func Info(c echo.Context) error {
     userID := c.Get("user_id").(int)
 
     var memberInfo MemberInfo

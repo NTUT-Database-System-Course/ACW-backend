@@ -9,6 +9,7 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
+        "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "name": "API Support",
             "url": "https://github.com/NTUT-Database-System-Course/ACW-Backend/issues",
@@ -728,6 +729,20 @@ const docTemplate = `{
                     "product"
                 ],
                 "summary": "List products",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Vendor ID",
+                        "name": "vendor_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Get random 5 items",
+                        "name": "random",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -798,6 +813,61 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/store/info": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get store info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "store"
+                ],
+                "summary": "Get store info",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/store.StoreInfo"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -1156,6 +1226,14 @@ const docTemplate = `{
                 }
             }
         },
+        "store.StoreInfo": {
+            "type": "object",
+            "properties": {
+                "store_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "tag.Tag": {
             "type": "object",
             "required": [
@@ -1180,11 +1258,11 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.0.1",
+	Version:          "1.0",
 	Host:             "localhost:8080",
-	BasePath:         "/v2",
+	BasePath:         "/api",
 	Schemes:          []string{},
-	Title:            "ACW-Backend API",
+	Title:            "Swagger ACW-Backend API",
 	Description:      "This is an API server for ACW-Backend",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

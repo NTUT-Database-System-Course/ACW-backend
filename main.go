@@ -13,16 +13,20 @@ import (
     "github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router"
 )
 
-// @contact.name   API Support
-// @contact.url    https://github.com/NTUT-Database-System-Course/ACW-Backend/issues
-// @contact.email  ericncnl3742@gmail.com
-// @license.name   Apache 2.0
-// @license.url    http://www.apache.org/licenses/LICENSE-2.0.html
-// @title          ACW-Backend API
-// @version        0.0.1
-// @description    This is an API server for ACW-Backend
-// @host           localhost:8080
-// @BasePath       /v2
+// @title Swagger ACW-Backend API
+// @version 1.0
+// @description This is an API server for ACW-Backend
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url https://github.com/NTUT-Database-System-Course/ACW-Backend/issues
+// @contact.email ericncnl3742@gmail.com
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host localhost:8080
+// @BasePath /api
 func main() {
     // Initialize Swagger Info
     config.NewSwaggerInfo()

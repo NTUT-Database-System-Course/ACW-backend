@@ -2,7 +2,8 @@
     "swagger": "2.0",
     "info": {
         "description": "This is an API server for ACW-Backend",
-        "title": "ACW-Backend API",
+        "title": "Swagger ACW-Backend API",
+        "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "name": "API Support",
             "url": "https://github.com/NTUT-Database-System-Course/ACW-Backend/issues",
@@ -12,10 +13,10 @@
             "name": "Apache 2.0",
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         },
-        "version": "0.0.1"
+        "version": "1.0"
     },
     "host": "localhost:8080",
-    "basePath": "/v2",
+    "basePath": "/api",
     "paths": {
         "/api/cart/add": {
             "post": {
@@ -722,6 +723,20 @@
                     "product"
                 ],
                 "summary": "List products",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Vendor ID",
+                        "name": "vendor_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Get random 5 items",
+                        "name": "random",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -792,6 +807,61 @@
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/store/info": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get store info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "store"
+                ],
+                "summary": "Get store info",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/store.StoreInfo"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -1147,6 +1217,14 @@
                 "valid": {
                     "description": "Valid is true if String is not NULL",
                     "type": "boolean"
+                }
+            }
+        },
+        "store.StoreInfo": {
+            "type": "object",
+            "properties": {
+                "store_id": {
+                    "type": "integer"
                 }
             }
         },

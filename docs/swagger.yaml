@@ -1,4 +1,4 @@
-basePath: /v2
+basePath: /api
 definitions:
   cart.CartItem:
     properties:
@@ -201,6 +201,11 @@ definitions:
         description: Valid is true if String is not NULL
         type: boolean
     type: object
+  store.StoreInfo:
+    properties:
+      store_id:
+        type: integer
+    type: object
   tag.Tag:
     properties:
       id:
@@ -224,8 +229,9 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  title: ACW-Backend API
-  version: 0.0.1
+  termsOfService: http://swagger.io/terms/
+  title: Swagger ACW-Backend API
+  version: "1.0"
 paths:
   /api/cart/add:
     post:
@@ -680,6 +686,15 @@ paths:
       consumes:
       - application/json
       description: Get all products
+      parameters:
+      - description: Vendor ID
+        in: query
+        name: vendor_id
+        type: string
+      - description: Get random 5 items
+        in: query
+        name: random
+        type: boolean
       produces:
       - application/json
       responses:
@@ -741,6 +756,41 @@ paths:
       summary: Update product
       tags:
       - product
+  /api/store/info:
+    get:
+      consumes:
+      - application/json
+      description: Get store info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/store.StoreInfo'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get store info
+      tags:
+      - store
   /api/tag/list:
     get:
       consumes:

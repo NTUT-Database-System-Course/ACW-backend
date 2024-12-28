@@ -23,15 +23,15 @@ import (
 // @Failure 500 {object} map[string]string
 // @Router /api/cart/delete [delete]
 func Delete(c echo.Context) error {
-    userID := c.Get("user_id").(int)
+	userID := c.Get("user_id").(int)
 
 	// Parse the product ID from the query parameters
-    productID, err := strconv.Atoi(c.QueryParam("product_id"))
-    if err != nil {
-        return c.JSON(http.StatusBadRequest, map[string]string{
-            "error": "Invalid product ID",
-        })
-    }
+	productID, err := strconv.Atoi(c.QueryParam("product_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"error": "Invalid product ID",
+		})
+	}
 
 	// Check if the product is in the user's cart
 	query := `SELECT 1 FROM cart WHERE member_id = $1 AND product_id = $2`
@@ -44,15 +44,15 @@ func Delete(c echo.Context) error {
 	}
 
 	// Remove the product from the user's cart
-    query = `DELETE FROM cart WHERE member_id = $1 AND product_id = $2`
-    _, err = config.DB.Exec(query, userID, productID)
-    if err != nil {
-        return c.JSON(http.StatusInternalServerError, map[string]string{
-            "error": "Failed to remove from cart",
-        })
-    }
+	query = `DELETE FROM cart WHERE member_id = $1 AND product_id = $2`
+	_, err = config.DB.Exec(query, userID, productID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"error": "Failed to remove from cart",
+		})
+	}
 
-    return c.JSON(http.StatusOK, map[string]interface{}{
-        "message": "Product removed from cart",
-    })
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "Product removed from cart",
+	})
 }

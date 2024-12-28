@@ -53,4 +53,7 @@ func NewRouter(e *echo.Echo) {
         g.PUT("/update", cart.Update, config.JWTMiddleware)
         g.DELETE("/delete", cart.Delete, config.JWTMiddleware)
     }
+
+    // Serve static files
+    e.Static("/static", "static")
 }

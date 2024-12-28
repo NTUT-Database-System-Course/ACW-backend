@@ -1,3 +1,4 @@
+-- init all tables
 CREATE TABLE "payment"(
     "id" SERIAL PRIMARY KEY,
     "method" INTEGER NOT NULL,
@@ -40,7 +41,7 @@ CREATE TABLE "administrator"(
 CREATE TABLE "product"(
     "id" SERIAL PRIMARY KEY,
     "price" INTEGER NOT NULL,
-    "description" VARCHAR(255) NOT NULL,
+    "description" VARCHAR(4095) NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "remain" INTEGER NOT NULL,
     "disability" BOOLEAN NOT NULL,
@@ -96,25 +97,49 @@ CREATE TABLE "own"(
     PRIMARY KEY("product_id", "tag_id")
 );
 
+-- init all default values
+INSERT INTO "user" ("password", "name", "username") VALUES 
+('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', 'member', 'member'),
+('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', 'admin', 'admin'),
+('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', 'vendor1', 'vendor1'),
+('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', 'vendor2', 'vendor2'),
+('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', 'vendor3', 'vendor3'),
+('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', 'vendor4', 'vendor4'),
+('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', 'vendor5', 'vendor5'),
+('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', 'vendor6', 'vendor6'),
+('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', 'vendor7', 'vendor7');
+
+INSERT INTO "member"("user_id", "email") VALUES
+(1, 'member@example.com');
+
+INSERT INTO "administrator"("user_id") VALUES
+(2);
+
+INSERT INTO "vendor"("user_id") VALUES
+(3);
+
 INSERT INTO "tag"("name", "type") VALUES
-('food', 0),
-('drink', 0),
-('clothes', 0),
-('electronics', 0),
-('furniture', 0),
-('book', 0),
-('toy', 0),
-('stationery', 0),
-('cosmetics', 1),
-('medicine', 1),
-('sports', 0),
-('music', 0),
-('movie', 0),
-('game', 0),
-('pet', 0),
-('plant', 0),
-('car', 1),
-('bike', 0),
-('house', 0),
-('appliance', 0),
-('other', 0);
+('鬼滅之刃', 0),
+('獵人Hunter', 0),
+('出租女友', 0),
+('間諜家家酒', 0),
+('進擊的巨人', 0),
+('刀劍神域', 0),
+('葬送的芙莉蓮', 0),
+('公仔', 1),
+('徽章', 1),
+('資料夾', 1),
+('鑰匙圈', 1),
+('馬克杯', 1),
+('掛畫', 1),
+('滑鼠墊', 1),
+('雨傘', 1),
+('衣服', 1);
+
+-- TODO : add more products later
+INSERT INTO "product"("price", "description", "name", "remain", "disability", "image_url", "build_time", "vendor_id") VALUES
+(590, '此公仔為一名持劍角色，背景為黑暗森林，特效呈現出冰霜般的波動感，動態感強烈，細節精美。', 'SE公仔 柱稽古篇-時透無一郎', 100, false, 'https://diz36nn4q02zr.cloudfront.net/webapi/imagesV3/Original/SalePage/10365660/0/638689338251170000?v=1', '2024-12-25 00:00:00', 3);
+
+INSERT INTO "own"("product_id", "tag_id") VALUES
+(1, 1),
+(1, 8);

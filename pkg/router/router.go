@@ -7,6 +7,7 @@ import (
     "github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router/tag"
     "github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router/product"
     "github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router/favorite"
+    "github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router/cart"
     "github.com/NTUT-Database-System-Course/ACW-Backend/pkg/config"
 )
 
@@ -42,5 +43,14 @@ func NewRouter(e *echo.Echo) {
         g.POST("/add", favorite.Add, config.JWTMiddleware)
         g.GET("/list", favorite.List, config.JWTMiddleware)
         g.DELETE("/delete", favorite.Delete, config.JWTMiddleware)
+    }
+
+    // Group all cart-related routes
+    g = e.Group("/api/cart")
+    {
+        g.POST("/add", cart.Add, config.JWTMiddleware)
+        g.GET("/list", cart.List, config.JWTMiddleware)
+        g.PUT("/update", cart.Update, config.JWTMiddleware)
+        g.DELETE("/delete", cart.Delete, config.JWTMiddleware)
     }
 }

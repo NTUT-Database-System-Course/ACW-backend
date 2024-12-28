@@ -16,3 +16,8 @@ sudo docker-compose -f .devcontainer/docker-compose.yml down -v
 ```
 sudo docker exec -it devcontainer-db-1 psql -U root -d db
 ```
+
+## generate docs
+```
+swag init --parseDependency github.com/guregu/null/v5
+```

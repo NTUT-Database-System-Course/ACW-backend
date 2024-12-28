@@ -1,5 +1,41 @@
 basePath: /v2
 definitions:
+  cart.CartItem:
+    properties:
+      build_time:
+        type: string
+      count:
+        type: integer
+      creation_time:
+        type: string
+      description:
+        type: string
+      disability:
+        type: boolean
+      id:
+        type: integer
+      image_url:
+        $ref: '#/definitions/sql.NullString'
+      name:
+        type: string
+      price:
+        type: integer
+      remain:
+        type: integer
+      tags:
+        items:
+          type: integer
+        type: array
+      vendor_id:
+        type: integer
+    required:
+    - description
+    - disability
+    - name
+    - price
+    - remain
+    - vendor_id
+    type: object
   favorite.FavoriteProduct:
     properties:
       description:
@@ -80,8 +116,6 @@ definitions:
         items:
           type: integer
         type: array
-      vendor_id:
-        type: integer
     required:
     - description
     - disability
@@ -89,7 +123,6 @@ definitions:
     - price
     - remain
     - tags
-    - vendor_id
     type: object
   product.Product:
     properties:
@@ -194,6 +227,179 @@ info:
   title: ACW-Backend API
   version: 0.0.1
 paths:
+  /api/cart/add:
+    post:
+      consumes:
+      - application/json
+      description: Add a product to the user's cart
+      parameters:
+      - description: Product ID
+        in: query
+        name: product_id
+        required: true
+        type: integer
+      - description: Count
+        in: query
+        name: count
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Add a product to the user's cart
+      tags:
+      - cart
+  /api/cart/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Remove a product from the user's cart
+      parameters:
+      - description: Product ID
+        in: query
+        name: product_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Remove a product from the user's cart
+      tags:
+      - cart
+  /api/cart/list:
+    get:
+      consumes:
+      - application/json
+      description: List all products in the user's cart
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/cart.CartItem'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: List cart items
+      tags:
+      - cart
+  /api/cart/update:
+    put:
+      consumes:
+      - application/json
+      description: Update the quantity of a product in the user's cart
+      parameters:
+      - description: Product ID
+        in: query
+        name: product_id
+        required: true
+        type: integer
+      - description: Count
+        in: query
+        name: count
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Update the quantity of a product in the user's cart
+      tags:
+      - cart
   /api/favorite/add:
     post:
       consumes:

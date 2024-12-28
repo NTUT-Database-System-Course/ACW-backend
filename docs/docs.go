@@ -23,6 +23,273 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/cart/add": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Add a product to the user's cart",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cart"
+                ],
+                "summary": "Add a product to the user's cart",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Product ID",
+                        "name": "product_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Count",
+                        "name": "count",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/cart/delete": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Remove a product from the user's cart",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cart"
+                ],
+                "summary": "Remove a product from the user's cart",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Product ID",
+                        "name": "product_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/cart/list": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "List all products in the user's cart",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cart"
+                ],
+                "summary": "List cart items",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/cart.CartItem"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/cart/update": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update the quantity of a product in the user's cart",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cart"
+                ],
+                "summary": "Update the quantity of a product in the user's cart",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Product ID",
+                        "name": "product_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Count",
+                        "name": "count",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/favorite/add": {
             "post": {
                 "security": [
@@ -596,6 +863,58 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "cart.CartItem": {
+            "type": "object",
+            "required": [
+                "description",
+                "disability",
+                "name",
+                "price",
+                "remain",
+                "vendor_id"
+            ],
+            "properties": {
+                "build_time": {
+                    "type": "string"
+                },
+                "count": {
+                    "type": "integer"
+                },
+                "creation_time": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "disability": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image_url": {
+                    "$ref": "#/definitions/sql.NullString"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "remain": {
+                    "type": "integer"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "vendor_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "favorite.FavoriteProduct": {
             "type": "object",
             "properties": {
@@ -697,8 +1016,7 @@ const docTemplate = `{
                 "name",
                 "price",
                 "remain",
-                "tags",
-                "vendor_id"
+                "tags"
             ],
             "properties": {
                 "description": {
@@ -724,9 +1042,6 @@ const docTemplate = `{
                     "items": {
                         "type": "integer"
                     }
-                },
-                "vendor_id": {
-                    "type": "integer"
                 }
             }
         },

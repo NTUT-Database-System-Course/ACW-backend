@@ -1,16 +1,14 @@
-// main.go
-
 package main
 
 import (
-    "log"
+	"log"
 
-    "github.com/labstack/echo/v4"
-    "github.com/labstack/echo/v4/middleware"
-    echoSwagger "github.com/swaggo/echo-swagger"
-    _ "github.com/NTUT-Database-System-Course/ACW-Backend/docs" // Import generated docs
-    "github.com/NTUT-Database-System-Course/ACW-Backend/pkg/config"
-    "github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router"
+	_ "github.com/NTUT-Database-System-Course/ACW-Backend/docs" // Import generated docs
+	"github.com/NTUT-Database-System-Course/ACW-Backend/pkg/config"
+	"github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 // @title Swagger ACW-Backend API
@@ -28,27 +26,33 @@ import (
 // @host localhost:8080
 // @BasePath /api
 func main() {
-    // Initialize Swagger Info
-    config.NewSwaggerInfo()
+	// Initialize Swagger Info
+	config.NewSwaggerInfo()
 
-    // Initialize the database connection
-    config.InitDB()
+	// Initialize the database connection
+	config.InitDB()
 
-    // Create a new Echo instance
-    e := echo.New()
+	// Create a new Echo instance
+	e := echo.New()
 
-    // Middleware
-    e.Use(middleware.Logger())
-    e.Use(middleware.Recover())
+	// Middleware
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
-    // Routes
-    router.NewRouter(e)
+	// CORS middleware
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"}, // Allow all origins
+		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
+	}))
 
-    // Swagger endpoint
-    e.GET("/swagger/*", echoSwagger.WrapHandler)
+	// Routes
+	router.NewRouter(e)
 
-    // Start the server
-    if err := e.Start("0.0.0.0:8080"); err != nil {
-        log.Fatalf("Shutting down the server with error: %v", err)
-    }
+	// Swagger endpoint
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
+
+	// Start the server
+	if err := e.Start("0.0.0.0:8080"); err != nil {
+		log.Fatalf("Shutting down the server with error: %v", err)
+	}
 }

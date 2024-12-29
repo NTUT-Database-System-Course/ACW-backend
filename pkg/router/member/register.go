@@ -32,6 +32,13 @@ func Register(c echo.Context) error {
 		})
 	}
 
+	// Validate the request data
+	if req.Name == "" || req.Username == "" || req.Password == "" || req.Email == "" {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"error": "Name, username, password, and email are required",
+		})
+	}
+
 	// Create a Member instance from the request data
 	member := Member{
 		Name:     req.Name,

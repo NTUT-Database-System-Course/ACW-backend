@@ -8,6 +8,7 @@ import (
 	"github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router/product"
 	"github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router/store"
 	"github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router/tag"
+	"github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router/order"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -59,6 +60,13 @@ func NewRouter(e *echo.Echo) {
 	g = e.Group("/api/store")
 	{
 		g.GET("/info", store.Info, config.JWTMiddleware)
+	}
+
+	// Group all order-related routes
+	g = e.Group("/api/order")
+	{
+		g.POST("/create", order.Create, config.JWTMiddleware)
+		g.GET("/list", order.List, config.JWTMiddleware)
 	}
 
 	// Serve static files

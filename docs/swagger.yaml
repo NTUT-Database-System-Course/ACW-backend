@@ -98,6 +98,68 @@ definitions:
     - password
     - username
     type: object
+  order.CreationRequest:
+    properties:
+      address:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      payment_method:
+        type: integer
+      phone_num:
+        type: string
+      shipment_method:
+        type: integer
+      state:
+        type: string
+    type: object
+  order.Order:
+    properties:
+      address:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      payment_method:
+        type: integer
+      phone_num:
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/order.Product'
+        type: array
+      shipment_method:
+        type: integer
+      state:
+        type: string
+    type: object
+  order.Product:
+    properties:
+      build_time:
+        type: string
+      count:
+        type: integer
+      description:
+        type: string
+      image_url:
+        $ref: '#/definitions/sql.NullString'
+      name:
+        type: string
+      price:
+        type: integer
+      vendor_name:
+        type: string
+    required:
+    - description
+    - name
+    - price
+    - vendor_name
+    type: object
   product.CreationRequest:
     properties:
       description:
@@ -644,6 +706,80 @@ paths:
       summary: Register member
       tags:
       - member
+  /api/order/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new order
+      parameters:
+      - description: Create Order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/order.CreationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Create order
+      tags:
+      - order
+  /api/order/list:
+    get:
+      consumes:
+      - application/json
+      description: List all orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/order.Order'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: List orders
+      tags:
+      - order
   /api/product/create:
     post:
       consumes:

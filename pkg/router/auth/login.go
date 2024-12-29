@@ -52,6 +52,17 @@ func Login(c echo.Context) error {
 		})
 	}
 
+	// Get the user's role
+	var role string
+	for _, table := range []string{"member", "vendor", "administrator"} {
+		query = `SELECT "user_id" FROM "` + table + `" WHERE "user_id" = $1`
+		err = config.DB.QueryRow(query, id).Scan(&id)
+		if err == nil {
+			role = table
+			break
+		}
+	}
+
 	// Generate JWT token
 	token, err := config.GenerateJWT(id)
 	if err != nil {
@@ -65,5 +76,6 @@ func Login(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "Login successful",
 		"token":   token,
+		"role":    role,
 	})
 }

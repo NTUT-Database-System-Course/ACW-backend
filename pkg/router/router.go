@@ -2,13 +2,14 @@ package router
 
 import (
 	"github.com/NTUT-Database-System-Course/ACW-Backend/pkg/config"
+	"github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router/auth"
 	"github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router/cart"
 	"github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router/favorite"
 	"github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router/member"
+	"github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router/order"
 	"github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router/product"
 	"github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router/store"
 	"github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router/tag"
-	"github.com/NTUT-Database-System-Course/ACW-Backend/pkg/router/order"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -17,12 +18,18 @@ func NewRouter(e *echo.Echo) {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
+	// Group all auth-related routes
+	g := e.Group("/api/auth")
+	{
+		g.POST("/login", auth.Login)
+	}
+
 	// Group all member-related routes
-	g := e.Group("/api/member")
+	g = e.Group("/api/member")
 	{
 		g.POST("/register", member.Register)
-		g.POST("/login", member.Login)
 		g.GET("/info", member.Info, config.JWTMiddleware)
+		g.PUT("/update", member.Update, config.JWTMiddleware)
 	}
 
 	// Group all tag-related routes

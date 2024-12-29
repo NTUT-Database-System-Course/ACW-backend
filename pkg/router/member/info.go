@@ -24,12 +24,12 @@ func Info(c echo.Context) error {
 
 	var memberInfo MemberInfo
 	query := `
-        SELECT u.id, u.name, u.username, m.email, m.address, m.phone_num, m.payment_id, m.shipment_id
+        SELECT u.id, u.name, u.username, m.email, m.address, m.phone_num
         FROM "user" u
         JOIN "member" m ON u.id = m.user_id
         WHERE u.id = $1
     `
-	err := config.DB.QueryRow(query, userID).Scan(&memberInfo.ID, &memberInfo.Name, &memberInfo.Username, &memberInfo.Email, &memberInfo.Address, &memberInfo.PhoneNum, &memberInfo.PaymentID, &memberInfo.ShipmentID)
+	err := config.DB.QueryRow(query, userID).Scan(&memberInfo.ID, &memberInfo.Name, &memberInfo.Username, &memberInfo.Email, &memberInfo.Address, &memberInfo.PhoneNum)
 	if err != nil {
 		log.Printf("Error fetching member info: %v", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{

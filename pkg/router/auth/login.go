@@ -1,4 +1,4 @@
-package member
+package auth
 
 import (
 	"log"
@@ -9,10 +9,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Login logs in a member
-// @Summary Login member
-// @Description Login member
-// @Tags member
+// Login logs in a user
+// @Summary Login user
+// @Description Login a user
+// @Tags auth
 // @Accept json
 // @Produce json
 // @Param login body LoginRequest true "Login Request"
@@ -20,7 +20,7 @@ import (
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
 // @Failure 500 {object} map[string]string
-// @Router /api/member/login [post]
+// @Router /api/auth/login [post]
 func Login(c echo.Context) error {
 	var req LoginRequest
 
@@ -33,9 +33,10 @@ func Login(c echo.Context) error {
 	}
 
 	// Fetch the user from the database
-	var member Member
+	var id int
+	var password string
 	query := `SELECT "id", "password" FROM "user" WHERE "username" = $1`
-	err := config.DB.QueryRow(query, req.Username).Scan(&member.ID, &member.Password)
+	err := config.DB.QueryRow(query, req.Username).Scan(&id, &password)
 	if err != nil {
 		log.Printf("Error fetching user from database: %v", err)
 		return c.JSON(http.StatusUnauthorized, map[string]string{
@@ -44,7 +45,7 @@ func Login(c echo.Context) error {
 	}
 
 	// Compare the provided password with the stored hashed password
-	if err := bcrypt.CompareHashAndPassword([]byte(member.Password), []byte(req.Password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(password), []byte(req.Password)); err != nil {
 		log.Printf("Invalid password: %v", err)
 		return c.JSON(http.StatusUnauthorized, map[string]string{
 			"error": "Invalid username or password",
@@ -52,7 +53,7 @@ func Login(c echo.Context) error {
 	}
 
 	// Generate JWT token
-	token, err := config.GenerateJWT(member.ID)
+	token, err := config.GenerateJWT(id)
 	if err != nil {
 		log.Printf("Error generating JWT token: %v", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{

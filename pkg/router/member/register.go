@@ -1,12 +1,12 @@
 package member
 
 import (
-    "net/http"
-    "log"
-    "github.com/lib/pq"
-    "github.com/NTUT-Database-System-Course/ACW-Backend/pkg/config"
-    "github.com/labstack/echo/v4"
-    "golang.org/x/crypto/bcrypt"
+	"github.com/NTUT-Database-System-Course/ACW-Backend/pkg/config"
+	"github.com/labstack/echo/v4"
+	"github.com/lib/pq"
+	"golang.org/x/crypto/bcrypt"
+	"log"
+	"net/http"
 )
 
 // Register registers a new member
@@ -22,80 +22,87 @@ import (
 // @Failure 500 {object} map[string]string
 // @Router /api/member/register [post]
 func Register(c echo.Context) error {
-    var req RegistrationRequest
+	var req RegistrationRequest
 
-    // Bind the incoming JSON to the RegistrationRequest struct
-    if err := c.Bind(&req); err != nil {
-        log.Printf("Error binding member data: %v", err)
-        return c.JSON(http.StatusBadRequest, map[string]string{
-            "error": "Invalid request payload",
-        })
-    }
+	// Bind the incoming JSON to the RegistrationRequest struct
+	if err := c.Bind(&req); err != nil {
+		log.Printf("Error binding member data: %v", err)
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"error": "Invalid request payload",
+		})
+	}
 
-    // Create a Member instance from the request data
-    member := Member{
-        Name:     req.Name,
-        Username: req.Username,
-        Password: req.Password,
-        Email:    req.Email,
-    }
+	// Validate the request data
+	if req.Name == "" || req.Username == "" || req.Password == "" || req.Email == "" {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"error": "Name, username, password, and email are required",
+		})
+	}
 
-    // Hash the member's password using bcrypt
-    hashedPassword, err := bcrypt.GenerateFromPassword([]byte(member.Password), bcrypt.DefaultCost)
-    if err != nil {
-        log.Printf("Error hashing password: %v", err)
-        return c.JSON(http.StatusInternalServerError, map[string]string{
-            "error": "Failed to process password",
-        })
-    }
+	// Create a Member instance from the request data
+	member := Member{
+		Name:     req.Name,
+		Username: req.Username,
+		Password: req.Password,
+		Email:    req.Email,
+	}
 
-    // Start a transaction
-    tx, err := config.DB.Begin()
-    if err != nil {
-        return c.JSON(http.StatusInternalServerError, map[string]string{
-            "error": "Failed to start transaction",
-        })
-    }
-    defer tx.Rollback()
+	// Hash the member's password using bcrypt
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(member.Password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Printf("Error hashing password: %v", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"error": "Failed to process password",
+		})
+	}
 
-    // Insert the member into the database
-    // 1. create a user in the database
-    query := `INSERT INTO "user" ("name", "username", "password") VALUES ($1, $2, $3) RETURNING "id"`
-    var userID int
-    err = tx.QueryRow(query, member.Name, member.Username, string(hashedPassword)).Scan(&userID)
-    if err != nil {
-        if pqErr, ok := err.(*pq.Error); ok && pqErr.Code == "23505" { // 23505 is the PostgreSQL error code for unique violation
-            log.Printf("Username already exists: %v", err)
-            return c.JSON(http.StatusConflict, map[string]string{
-                "error": "Username already exists",
-            })
-        }
-        log.Printf("Error inserting member into database: %v", err)
-        return c.JSON(http.StatusInternalServerError, map[string]string{
-            "error": "Failed to insert member into database",
-        })
-    }
+	// Start a transaction
+	tx, err := config.DB.Begin()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"error": "Failed to start transaction",
+		})
+	}
+	defer tx.Rollback()
 
-    // 2. create a member in the database
-    query = `INSERT INTO "member" ("email", "user_id") VALUES ($1, $2)`
-    _, err = tx.Exec(query, member.Email, userID)
-    if err != nil {
-        log.Printf("Error inserting member info into database: %v", err)
-        return c.JSON(http.StatusInternalServerError, map[string]string{
-            "error": "Failed to insert member info into database",
-        })
-    }
+	// Insert the member into the database
+	// 1. create a user in the database
+	query := `INSERT INTO "user" ("name", "username", "password") VALUES ($1, $2, $3) RETURNING "id"`
+	var userID int
+	err = tx.QueryRow(query, member.Name, member.Username, string(hashedPassword)).Scan(&userID)
+	if err != nil {
+		if pqErr, ok := err.(*pq.Error); ok && pqErr.Code == "23505" { // 23505 is the PostgreSQL error code for unique violation
+			log.Printf("Username already exists: %v", err)
+			return c.JSON(http.StatusConflict, map[string]string{
+				"error": "Username already exists",
+			})
+		}
+		log.Printf("Error inserting member into database: %v", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"error": "Failed to insert member into database",
+		})
+	}
 
-    // Commit the transaction
-    if err := tx.Commit(); err != nil {
-        return c.JSON(http.StatusInternalServerError, map[string]string{
-            "error": "Failed to commit transaction",
-        })
-    }
+	// 2. create a member in the database
+	query = `INSERT INTO "member" ("email", "user_id") VALUES ($1, $2)`
+	_, err = tx.Exec(query, member.Email, userID)
+	if err != nil {
+		log.Printf("Error inserting member info into database: %v", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"error": "Failed to insert member info into database",
+		})
+	}
 
-    // Respond with a success message and the new member's ID
-    return c.JSON(http.StatusOK, map[string]interface{}{
-        "message": "Member registered successfully",
-        "id": userID,
-    })
+	// Commit the transaction
+	if err := tx.Commit(); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"error": "Failed to commit transaction",
+		})
+	}
+
+	// Respond with a success message and the new member's ID
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "Member registered successfully",
+		"id":      userID,
+	})
 }

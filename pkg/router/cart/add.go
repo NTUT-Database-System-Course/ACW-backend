@@ -1,12 +1,12 @@
 package cart
 
 import (
-    "net/http"
-    "strconv"
-    "time"
+	"net/http"
+	"strconv"
+	"time"
 
-    "github.com/NTUT-Database-System-Course/ACW-Backend/pkg/config"
-    "github.com/labstack/echo/v4"
+	"github.com/NTUT-Database-System-Course/ACW-Backend/pkg/config"
+	"github.com/labstack/echo/v4"
 )
 
 // Handles adding a product to the user's cart
@@ -24,21 +24,21 @@ import (
 // @Failure 500 {object} map[string]string
 // @Router /api/cart/add [post]
 func Add(c echo.Context) error {
-    userID := c.Get("user_id").(int)
+	userID := c.Get("user_id").(int)
 
 	// Parse the product ID and count
-    productID, err := strconv.Atoi(c.QueryParam("product_id"))
-    if err != nil {
-        return c.JSON(http.StatusBadRequest, map[string]string{
-            "error": "Invalid product ID",
-        })
-    }
-    count, err := strconv.Atoi(c.QueryParam("count"))
-    if err != nil || count <= 0 {
-        return c.JSON(http.StatusBadRequest, map[string]string{
-            "error": "Invalid count",
-        })
-    }
+	productID, err := strconv.Atoi(c.QueryParam("product_id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"error": "Invalid product ID",
+		})
+	}
+	count, err := strconv.Atoi(c.QueryParam("count"))
+	if err != nil || count <= 0 {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"error": "Invalid count",
+		})
+	}
 
 	// Check if the product exists
 	query := `SELECT id FROM product WHERE id = $1`
@@ -65,15 +65,14 @@ func Add(c echo.Context) error {
 		})
 	}
 
-
 	// Get current time in Taipei timezone
-    location, err := time.LoadLocation("Asia/Taipei")
-    if err != nil {
-        return c.JSON(http.StatusInternalServerError, map[string]string{
-            "error": "Failed to load location",
-        })
-    }
-    now := time.Now().In(location)
+	location, err := time.LoadLocation("Asia/Taipei")
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"error": "Failed to load location",
+		})
+	}
+	now := time.Now().In(location)
 
 	// Add the product to the cart
 	query = `INSERT INTO cart (member_id, product_id, count, time) VALUES ($1, $2, $3, $4)`
@@ -84,7 +83,7 @@ func Add(c echo.Context) error {
 		})
 	}
 
-    return c.JSON(http.StatusOK, map[string]interface{}{
-        "message": "Product added to cart",
-    })
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "Product added to cart",
+	})
 }

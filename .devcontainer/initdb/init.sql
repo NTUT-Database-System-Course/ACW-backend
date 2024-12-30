@@ -1,16 +1,4 @@
 -- init all tables
-CREATE TABLE "payment"(
-    "id" SERIAL PRIMARY KEY,
-    "method" INTEGER NOT NULL,
-    "detail" VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE "shipment"(
-    "id" SERIAL PRIMARY KEY,
-    "method" INTEGER NOT NULL,
-    "detail" VARCHAR(255) NOT NULL
-);
-
 CREATE TABLE "user"(
     "id" SERIAL PRIMARY KEY,
     "password" VARCHAR(255) NOT NULL,
@@ -23,8 +11,6 @@ CREATE TABLE "member"(
     "address" VARCHAR(255),
     "email" VARCHAR(255) NOT NULL,
     "phone_num" VARCHAR(255),
-    "payment_id" INTEGER REFERENCES "payment"("id"),
-    "shipment_id" INTEGER REFERENCES "shipment"("id"),
     PRIMARY KEY("user_id")
 );
 
@@ -71,10 +57,10 @@ CREATE TABLE "order"(
     "description" VARCHAR(255) NOT NULL,
     "state" VARCHAR(255) NOT NULL,
     "address" VARCHAR(255) NOT NULL,
+    "phone_num" VARCHAR(255) NOT NULL,
     "member_id" INTEGER NOT NULL REFERENCES "member"("user_id"),
-    "vendor_id" INTEGER NOT NULL REFERENCES "vendor"("user_id"),
-    "payment_id" INTEGER NOT NULL REFERENCES "payment"("id"),
-    "shipment_id" INTEGER NOT NULL REFERENCES "shipment"("id")
+    "payment_method" INTEGER NOT NULL,
+    "shipment_method" INTEGER NOT NULL
 );
 
 CREATE TABLE "list"(
@@ -101,13 +87,13 @@ CREATE TABLE "own"(
 INSERT INTO "user" ("password", "name", "username") VALUES 
 ('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', 'member', 'member'),
 ('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', 'admin', 'admin'),
-('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', 'vendor1', 'vendor1'),
-('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', 'vendor2', 'vendor2'),
-('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', 'vendor3', 'vendor3'),
-('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', 'vendor4', 'vendor4'),
-('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', 'vendor5', 'vendor5'),
-('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', 'vendor6', 'vendor6'),
-('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', 'vendor7', 'vendor7');
+('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', '鬼滅之刃 代理商', 'vendor1'),
+('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', '獵人Hunter 代理商', 'vendor2'),
+('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', '出租女友 代理商', 'vendor3'),
+('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', '間諜家家酒 代理商', 'vendor4'),
+('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', '進擊的巨人 代理商', 'vendor5'),
+('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', '刀劍神域 代理商', 'vendor6'),
+('$2a$10$QT7PBe0i.0EftDfL.fGMb.CpN5htUTCLx/vuxvywi3y9qnVwhVqeO', '葬送的芙莉蓮 代理商', 'vendor7');
 
 INSERT INTO "member"("user_id", "email") VALUES
 (1, 'member@example.com');

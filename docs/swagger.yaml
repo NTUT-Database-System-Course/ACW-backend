@@ -1,5 +1,15 @@
-basePath: /v2
+basePath: /api
 definitions:
+  auth.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
   cart.CartItem:
     properties:
       build_time:
@@ -53,16 +63,6 @@ definitions:
       remain:
         type: integer
     type: object
-  member.LoginRequest:
-    properties:
-      password:
-        type: string
-      username:
-        type: string
-    required:
-    - password
-    - username
-    type: object
   member.MemberInfo:
     properties:
       address:
@@ -73,12 +73,8 @@ definitions:
         type: integer
       name:
         type: string
-      payment_id:
-        $ref: '#/definitions/sql.NullInt64'
       phone_num:
         $ref: '#/definitions/sql.NullString'
-      shipment_id:
-        $ref: '#/definitions/sql.NullInt64'
       username:
         type: string
     type: object
@@ -97,6 +93,79 @@ definitions:
     - name
     - password
     - username
+    type: object
+  member.UpdateRequest:
+    properties:
+      address:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      phone_num:
+        type: string
+    type: object
+  order.CreationRequest:
+    properties:
+      address:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      payment_method:
+        type: integer
+      phone_num:
+        type: string
+      shipment_method:
+        type: integer
+      state:
+        type: string
+    type: object
+  order.Order:
+    properties:
+      address:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      payment_method:
+        type: integer
+      phone_num:
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/order.Product'
+        type: array
+      shipment_method:
+        type: integer
+      state:
+        type: string
+    type: object
+  order.Product:
+    properties:
+      build_time:
+        type: string
+      count:
+        type: integer
+      description:
+        type: string
+      image_url:
+        $ref: '#/definitions/sql.NullString'
+      name:
+        type: string
+      price:
+        type: integer
+      vendor_name:
+        type: string
+    required:
+    - description
+    - name
+    - price
+    - vendor_name
     type: object
   product.CreationRequest:
     properties:
@@ -185,14 +254,6 @@ definitions:
     - remain
     - tags
     type: object
-  sql.NullInt64:
-    properties:
-      int64:
-        type: integer
-      valid:
-        description: Valid is true if Int64 is not NULL
-        type: boolean
-    type: object
   sql.NullString:
     properties:
       string:
@@ -200,6 +261,11 @@ definitions:
       valid:
         description: Valid is true if String is not NULL
         type: boolean
+    type: object
+  store.StoreInfo:
+    properties:
+      store_id:
+        type: integer
     type: object
   tag.Tag:
     properties:
@@ -224,9 +290,51 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  title: ACW-Backend API
-  version: 0.0.1
+  termsOfService: http://swagger.io/terms/
+  title: Swagger ACW-Backend API
+  version: "1.0"
 paths:
+  /api/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user
+      parameters:
+      - description: Login Request
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login user
+      tags:
+      - auth
   /api/cart/add:
     post:
       consumes:
@@ -556,47 +664,6 @@ paths:
       summary: Get member info
       tags:
       - member
-  /api/member/login:
-    post:
-      consumes:
-      - application/json
-      description: Login member
-      parameters:
-      - description: Login Request
-        in: body
-        name: login
-        required: true
-        schema:
-          $ref: '#/definitions/member.LoginRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Login member
-      tags:
-      - member
   /api/member/register:
     post:
       consumes:
@@ -638,6 +705,123 @@ paths:
       summary: Register member
       tags:
       - member
+  /api/member/update:
+    put:
+      consumes:
+      - application/json
+      description: Update member info
+      parameters:
+      - description: Update Request
+        in: body
+        name: update
+        required: true
+        schema:
+          $ref: '#/definitions/member.UpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Update member info
+      tags:
+      - member
+  /api/order/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new order
+      parameters:
+      - description: Create Order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/order.CreationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Create order
+      tags:
+      - order
+  /api/order/list:
+    get:
+      consumes:
+      - application/json
+      description: List all orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/order.Order'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: List orders
+      tags:
+      - order
   /api/product/create:
     post:
       consumes:
@@ -680,6 +864,15 @@ paths:
       consumes:
       - application/json
       description: Get all products
+      parameters:
+      - description: Vendor ID
+        in: query
+        name: vendor_id
+        type: string
+      - description: Get random 5 items
+        in: query
+        name: random
+        type: boolean
       produces:
       - application/json
       responses:
@@ -741,6 +934,41 @@ paths:
       summary: Update product
       tags:
       - product
+  /api/store/info:
+    get:
+      consumes:
+      - application/json
+      description: Get store info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/store.StoreInfo'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get store info
+      tags:
+      - store
   /api/tag/list:
     get:
       consumes:

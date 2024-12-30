@@ -1,10 +1,10 @@
 package cart
 
 import (
-    "net/http"
+	"net/http"
 
-    "github.com/NTUT-Database-System-Course/ACW-Backend/pkg/config"
-    "github.com/labstack/echo/v4"
+	"github.com/NTUT-Database-System-Course/ACW-Backend/pkg/config"
+	"github.com/labstack/echo/v4"
 )
 
 // List handles listing all products in the user's cart
@@ -20,10 +20,10 @@ import (
 // @Failure 500 {object} map[string]string
 // @Router /api/cart/list [get]
 func List(c echo.Context) error {
-    userID := c.Get("user_id").(int)
+	userID := c.Get("user_id").(int)
 
 	// Get all products in the user's cart
-    query := `
+	query := `
 		SELECT p.id, p.name, p.description, p.price, p.vendor_id, p.remain, p.disability, p.build_time, p.image_url, c.count, c.time
 		FROM cart c
 		JOIN product p ON c.product_id = p.id

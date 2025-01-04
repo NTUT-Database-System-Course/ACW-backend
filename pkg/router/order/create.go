@@ -104,6 +104,28 @@ func Create(c echo.Context) error {
 				"error": "Failed to insert product into list",
 			})
 		}
+
+		// Update product stock and check if the stock is enough
+		query = `SELECT stock FROM product WHERE id = $1`
+		var stock int
+		err = tx.QueryRow(query, productID).Scan(&stock)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]string{
+				"error": "Failed to get product stock",
+			})
+		}
+		if stock < count {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"error": "Not enough stock",
+			})
+		}
+
+		query = `UPDATE product SET remain = remain - $1 WHERE id = $2`
+		if _, err := tx.Exec(query, count, productID); err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]string{
+				"error": "Failed to update product stock",
+			})
+		}
 	}
 
 	if isEmpty {

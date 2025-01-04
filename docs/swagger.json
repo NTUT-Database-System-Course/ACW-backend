@@ -908,6 +908,12 @@
                 "summary": "List products",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "Vendor ID",
                         "name": "vendor_id",
@@ -1403,8 +1409,7 @@
                 "disability",
                 "name",
                 "price",
-                "remain",
-                "vendor_id"
+                "remain"
             ],
             "properties": {
                 "build_time": {
@@ -1437,8 +1442,8 @@
                         "type": "integer"
                     }
                 },
-                "vendor_id": {
-                    "type": "integer"
+                "vendor_announcement": {
+                    "type": "string"
                 }
             }
         },

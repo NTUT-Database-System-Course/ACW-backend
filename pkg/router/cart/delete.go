@@ -35,11 +35,16 @@ func Delete(c echo.Context) error {
 
 	// Check if the product is in the user's cart
 	query := `SELECT 1 FROM cart WHERE member_id = $1 AND product_id = $2`
-	var exists int = 0
+	var exists int
 	err = config.DB.QueryRow(query, userID, productID).Scan(&exists)
-	if err != sql.ErrNoRows {
-		return c.JSON(http.StatusBadRequest, map[string]string{
-			"error": "Product not in cart",
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return c.JSON(http.StatusBadRequest, map[string]string{
+				"error": "Product not in cart",
+			})
+		}
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"error": "Failed to check product in cart",
 		})
 	}
 

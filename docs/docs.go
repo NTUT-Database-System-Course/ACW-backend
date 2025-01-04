@@ -914,6 +914,12 @@ const docTemplate = `{
                 "summary": "List products",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "Vendor ID",
                         "name": "vendor_id",
@@ -1409,8 +1415,7 @@ const docTemplate = `{
                 "disability",
                 "name",
                 "price",
-                "remain",
-                "vendor_id"
+                "remain"
             ],
             "properties": {
                 "build_time": {
@@ -1443,8 +1448,8 @@ const docTemplate = `{
                         "type": "integer"
                     }
                 },
-                "vendor_id": {
-                    "type": "integer"
+                "vendor_announcement": {
+                    "type": "string"
                 }
             }
         },

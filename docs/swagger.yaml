@@ -215,15 +215,14 @@ definitions:
         items:
           type: integer
         type: array
-      vendor_id:
-        type: integer
+      vendor_announcement:
+        type: string
     required:
     - description
     - disability
     - name
     - price
     - remain
-    - vendor_id
     type: object
   product.UpdateRequest:
     properties:
@@ -865,6 +864,10 @@ paths:
       - application/json
       description: Get all products
       parameters:
+      - description: Product ID
+        in: query
+        name: id
+        type: integer
       - description: Vendor ID
         in: query
         name: vendor_id

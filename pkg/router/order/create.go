@@ -115,8 +115,10 @@ func Create(c echo.Context) error {
 			})
 		}
 		if stock < count {
-			return c.JSON(http.StatusBadRequest, map[string]string{
+			return c.JSON(http.StatusBadRequest, map[string]interface{}{
 				"error": "Not enough stock",
+				"product_name": req.Name,
+				"remain": stock,
 			})
 		}
 

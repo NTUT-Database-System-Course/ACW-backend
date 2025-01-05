@@ -115,9 +115,16 @@ func Create(c echo.Context) error {
 			})
 		}
 		if stock < count {
+			query = `SELECT name FROM product WHERE id = $1`
+			var productName string
+			if err := tx.QueryRow(query, productID).Scan(&productName); err != nil {
+				return c.JSON(http.StatusInternalServerError, map[string]string{
+					"error": "Failed to get product name",
+				})
+			}
 			return c.JSON(http.StatusBadRequest, map[string]interface{}{
 				"error": "Not enough stock",
-				"product_name": req.Name,
+				"product_name": productName,
 				"remain": stock,
 			})
 		}

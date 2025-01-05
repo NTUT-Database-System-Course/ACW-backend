@@ -106,7 +106,7 @@ func Create(c echo.Context) error {
 		}
 
 		// Update product stock and check if the stock is enough
-		query = `SELECT stock FROM product WHERE id = $1`
+		query = `SELECT remain FROM product WHERE id = $1`
 		var stock int
 		err = tx.QueryRow(query, productID).Scan(&stock)
 		if err != nil {
